@@ -125,7 +125,10 @@ class _ConversationState extends State<Conversation> {
   String msg = '';
   String current_user = '';
   String name = '';
+  String docid = '';
+
   bool cexists = false;
+  bool cexists1 = false;
   var arr = [];
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth1 = FirebaseAuth.instance;
@@ -180,17 +183,26 @@ class _ConversationState extends State<Conversation> {
                     onPressed: () async {
                       print(other);
                       print(current_user);
-                      String docid = '';
                       //if (other+current) exists add to this thread, else create it
                       Future<bool> exists = db.chatExists(other, current_user);
-                      exists.then((value) => setState(() {
+                      Future<bool> exists1 = db.chatExists(current_user, other);
+                      await exists1.then((value) => setState(() {
+                            setState(() => cexists1 = value);
+                            print(cexists1);
+                          }));
+                      await exists.then((value) => setState(() {
                             setState(() => cexists = value);
                             print(cexists);
                           }));
                       if (cexists) {
-                        docid = other + current_user;
+                        print("exists");
+                        setState(() => docid = other + current_user);
+                      } else if (cexists1) {
+                        print('ex1');
+                        setState(() => docid = current_user + other);
                       } else {
-                        docid = current_user + other;
+                        print('not');
+                        setState(() => docid = current_user + other);
                       }
                       print(docid);
                       db.addAdminMessage(message, docid, name);
