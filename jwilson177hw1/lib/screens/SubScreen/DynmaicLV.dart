@@ -184,7 +184,7 @@ class _ConversationState extends State<Conversation> {
                       //if (other+current) exists add to this thread, else create it
                       Future<bool> exists = db.chatExists(other, current_user);
                       exists.then((value) => setState(() {
-                            cexists = value;
+                            setState(() => cexists = value);
                             print(cexists);
                           }));
                       if (cexists) {
