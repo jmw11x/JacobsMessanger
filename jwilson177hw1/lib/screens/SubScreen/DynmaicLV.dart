@@ -180,21 +180,22 @@ class _ConversationState extends State<Conversation> {
                     onPressed: () async {
                       print(other);
                       print(current_user);
+                      String docid = '';
                       //if (other+current) exists add to this thread, else create it
-                      Future<bool> exists = db.chatExists1(other, current_user);
+                      Future<bool> exists = db.chatExists(other, current_user);
                       exists.then((value) => setState(() {
                             cexists = value;
                             print(cexists);
                           }));
                       if (cexists) {
-                        db.addAdminMessage(message, current_user + other, name);
-
-                        FocusScope.of(context).unfocus();
+                        docid = other + current_user;
                       } else {
-                        db.addAdminMessage(message, other + current_user, name);
-
-                        FocusScope.of(context).unfocus();
+                        docid = current_user + other;
                       }
+                      print(docid);
+                      db.addAdminMessage(message, docid, name);
+
+                      FocusScope.of(context).unfocus();
                     },
                     child: Text(">Send")),
               )
